@@ -1,0 +1,47 @@
+{
+  "catalogVersion": "2026-01-27",
+  "profileId": "GLOBAL_DEFAULTS_V1",
+
+  "globalDefaults": {
+    "carbonFootprintGCO2": {
+      "type": "DOUBLE",
+      "unit": "gCO2",
+      "value": 210000,
+      "reference": { "id": "ASSUMPTION:CARBON_V1", "text": "Valore di default scelto nel progetto (assunzione)." }
+    },
+    "energyConsumptionKWh": {
+      "type": "DOUBLE",
+      "unit": "kWh",
+      "value": 2450,
+      "reference": { "id": "ASSUMPTION:ENERGY_V1", "text": "Valore di default scelto nel progetto (assunzione)." }
+    }
+  },
+
+  "roleDefaults": {
+    "secretary": {
+      "participants": 3,
+      "hours": "172",
+      "wageEurPerHour": "8.90",
+      "reference": { "id": "ASSUMPTION:SECRETARY_V1", "text": "Assunzione di benchmark." }
+    },
+    "logisticsDeptHead": {
+      "participants": 1,
+      "hours": "174",
+      "wageEurPerHour": "14.40",
+      "reference": { "id": "ASSUMPTION:HEAD_V1", "text": "Assunzione di benchmark." }
+    },
+    "warehouseStaff": {
+      "participants": 5,
+      "hours": "173",
+      "wageEurPerHour": "8.30",
+      "reference": { "id": "ASSUMPTION:WAREHOUSE_V1", "text": "Assunzione di benchmark." }
+    }
+  },
+
+  "fallbacks": {
+    "participants": 1,
+    "hours": "64",
+    "wageEurPerHour": "29.40",
+    "reference": { "id": "ASSUMPTION:GENERIC_V1", "text": "Fallback ruoli non catalogati." }
+  }
+}

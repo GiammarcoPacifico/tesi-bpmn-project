@@ -1,0 +1,660 @@
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_DispatchGoods" targetNamespace="http://example.com/bpmn2">
+<bpmn:collaboration id="Collaboration_DispatchGoods">
+<bpmn:participant id="Participant_Company" name="Company" processRef="Process_Company"/>
+<bpmn:participant id="Participant_ExternalPartners" name="External Partners" processRef="Process_ExternalPartners"/>
+<bpmn:participant id="Participant_DigitalSystem" name="Digital System" processRef="Process_DigitalSystem"/>
+<bpmn:messageFlow id="MessageFlow_RFP_To_SLC" name="RFP for Sustainable Shipment" sourceRef="Task_SendRFPToSustainableLogisticsCompanies" targetRef="Task_SLC_ReceiveRFP"/>
+<bpmn:messageFlow id="MessageFlow_Offer_To_Company" name="Offer Response" sourceRef="Task_SLC_SendOffer" targetRef="Task_AnalyzeOffers"/>
+<bpmn:messageFlow id="MessageFlow_Notify_To_SLC" name="Shipment Notification" sourceRef="Task_NotifyLogisticsProvider" targetRef="Task_SLC_ReceiveShipmentNotification"/>
+<bpmn:messageFlow id="MessageFlow_Notify_To_CNP" name="Shipment Notification" sourceRef="Task_NotifyLogisticsProvider" targetRef="Task_CNP_ReceiveShipmentNotification"/>
+<bpmn:messageFlow id="MessageFlow_PackagingUsage_To_DigitalSystem" name="Packaging Usage Data" sourceRef="Task_TrackPackagingMaterialUsage" targetRef="Task_ReceivePackagingUsageData"/>
+</bpmn:collaboration>
+<!--  Company Process  -->
+<bpmn:process id="Process_Company" isExecutable="false" name="Dispatch of Goods - Sustainable">
+<bpmn:laneSet id="LaneSet_Company">
+<bpmn:lane id="Lane_Secretary" name="Secretary">
+<bpmn:flowNodeRef>StartEvent_GoodsNeedToBeShipped</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_CheckShippingRequirements</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Gateway_ShipmentSizeDecision</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_SendRFPToSustainableLogisticsCompanies</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_AnalyzeOffers</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_ReviewAndApproveBestOption</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_SelectCarbonNeutralPostalService</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_GenerateDigitalShippingLabel</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Gateway_InsuranceRequired</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_RequestInsuranceApproval</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Gateway_PrepareShipment</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_PrepareDigitalDocumentation</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Gateway_MergePreparationActivities</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_NotifyLogisticsProvider</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_MonitorCarbonFootprint</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>EndEvent_ShippingProcessCompleted</bpmn:flowNodeRef>
+</bpmn:lane>
+<bpmn:lane id="Lane_LogisticsDeptHead" name="Logistics Department Head">
+<bpmn:flowNodeRef>Task_ApproveInsurance</bpmn:flowNodeRef>
+</bpmn:lane>
+<bpmn:lane id="Lane_WarehouseStaff" name="Warehouse Staff">
+<bpmn:flowNodeRef>Task_PrepareGoodsWithSustainableMaterials</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_TrackPackagingMaterialUsage</bpmn:flowNodeRef>
+</bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="StartEvent_GoodsNeedToBeShipped" name="Goods Need to be Shipped">
+<bpmn:outgoing>Flow_SE1_To_T1</bpmn:outgoing>
+</bpmn:startEvent>
+<bpmn:task id="Task_CheckShippingRequirements" name="Check Shipping Requirements in Digital System">
+<bpmn:incoming>Flow_SE1_To_T1</bpmn:incoming>
+<bpmn:outgoing>Flow_T1_To_G1</bpmn:outgoing>
+</bpmn:task>
+<bpmn:exclusiveGateway id="Gateway_ShipmentSizeDecision" name="Shipment Size Decision">
+<bpmn:incoming>Flow_T1_To_G1</bpmn:incoming>
+<bpmn:outgoing>Flow_G1_To_T2</bpmn:outgoing>
+<bpmn:outgoing>Flow_G1_To_T5</bpmn:outgoing>
+</bpmn:exclusiveGateway>
+<bpmn:sendTask id="Task_SendRFPToSustainableLogisticsCompanies" name="Send RFP to Sustainable Logistics Companies">
+<bpmn:incoming>Flow_G1_To_T2</bpmn:incoming>
+<bpmn:outgoing>Flow_T2_To_T3</bpmn:outgoing>
+</bpmn:sendTask>
+<bpmn:receiveTask id="Task_AnalyzeOffers" name="Analyze Offers Based on Multiple Criteria">
+<bpmn:incoming>Flow_T2_To_T3</bpmn:incoming>
+<bpmn:incoming>Flow_Message_Offer_To_Company_Internal</bpmn:incoming>
+<bpmn:outgoing>Flow_T3_To_T4</bpmn:outgoing>
+</bpmn:receiveTask>
+<bpmn:userTask id="Task_ReviewAndApproveBestOption" name="Review and Approve Best Option">
+<bpmn:incoming>Flow_T3_To_T4</bpmn:incoming>
+<bpmn:outgoing>Flow_T4_To_T6</bpmn:outgoing>
+</bpmn:userTask>
+<bpmn:task id="Task_SelectCarbonNeutralPostalService" name="Select Carbon-neutral Postal Service">
+<bpmn:incoming>Flow_G1_To_T5</bpmn:incoming>
+<bpmn:outgoing>Flow_T5_To_T6</bpmn:outgoing>
+</bpmn:task>
+<bpmn:task id="Task_GenerateDigitalShippingLabel" name="Generate Digital Shipping Label">
+<bpmn:incoming>Flow_T4_To_T6</bpmn:incoming>
+<bpmn:incoming>Flow_T5_To_T6</bpmn:incoming>
+<bpmn:outgoing>Flow_T6_To_G2</bpmn:outgoing>
+</bpmn:task>
+<bpmn:exclusiveGateway id="Gateway_InsuranceRequired" name="Insurance Required?">
+<bpmn:incoming>Flow_T6_To_G2</bpmn:incoming>
+<bpmn:outgoing>Flow_G2_To_T7</bpmn:outgoing>
+<bpmn:outgoing>Flow_G2_To_G3</bpmn:outgoing>
+</bpmn:exclusiveGateway>
+<bpmn:task id="Task_RequestInsuranceApproval" name="Request Insurance Approval">
+<bpmn:incoming>Flow_G2_To_T7</bpmn:incoming>
+<bpmn:outgoing>Flow_T7_To_T8</bpmn:outgoing>
+</bpmn:task>
+<bpmn:userTask id="Task_ApproveInsurance" name="Approve Insurance">
+<bpmn:incoming>Flow_T7_To_T8</bpmn:incoming>
+<bpmn:outgoing>Flow_T8_To_G3</bpmn:outgoing>
+</bpmn:userTask>
+<bpmn:parallelGateway id="Gateway_PrepareShipment" name="Prepare Shipment">
+<bpmn:incoming>Flow_G2_To_G3</bpmn:incoming>
+<bpmn:incoming>Flow_T8_To_G3</bpmn:incoming>
+<bpmn:outgoing>Flow_G3_To_T9</bpmn:outgoing>
+<bpmn:outgoing>Flow_G3_To_T11</bpmn:outgoing>
+</bpmn:parallelGateway>
+<bpmn:task id="Task_PrepareGoodsWithSustainableMaterials" name="Prepare Goods with Sustainable Materials">
+<bpmn:incoming>Flow_G3_To_T9</bpmn:incoming>
+<bpmn:outgoing>Flow_T9_To_T10</bpmn:outgoing>
+</bpmn:task>
+<bpmn:sendTask id="Task_TrackPackagingMaterialUsage" name="Track Packaging Material Usage">
+<bpmn:incoming>Flow_T9_To_T10</bpmn:incoming>
+<bpmn:outgoing>Flow_T10_To_G4</bpmn:outgoing>
+</bpmn:sendTask>
+<bpmn:task id="Task_PrepareDigitalDocumentation" name="Prepare Digital Documentation">
+<bpmn:incoming>Flow_G3_To_T11</bpmn:incoming>
+<bpmn:outgoing>Flow_T11_To_G4</bpmn:outgoing>
+</bpmn:task>
+<bpmn:parallelGateway id="Gateway_MergePreparationActivities" name="Merge Preparation Activities">
+<bpmn:incoming>Flow_T10_To_G4</bpmn:incoming>
+<bpmn:incoming>Flow_T11_To_G4</bpmn:incoming>
+<bpmn:outgoing>Flow_G4_To_T12</bpmn:outgoing>
+</bpmn:parallelGateway>
+<bpmn:sendTask id="Task_NotifyLogisticsProvider" name="Notify Logistics Provider">
+<bpmn:incoming>Flow_G4_To_T12</bpmn:incoming>
+<bpmn:outgoing>Flow_T12_To_T13</bpmn:outgoing>
+</bpmn:sendTask>
+<bpmn:task id="Task_MonitorCarbonFootprint" name="Monitor Carbon Footprint">
+<bpmn:incoming>Flow_T12_To_T13</bpmn:incoming>
+<bpmn:outgoing>Flow_T13_To_EE1</bpmn:outgoing>
+</bpmn:task>
+<bpmn:endEvent id="EndEvent_ShippingProcessCompleted" name="Shipping Process Completed">
+<bpmn:incoming>Flow_T13_To_EE1</bpmn:incoming>
+</bpmn:endEvent>
+<!--  Internal sequence flows  -->
+<bpmn:sequenceFlow id="Flow_SE1_To_T1" sourceRef="StartEvent_GoodsNeedToBeShipped" targetRef="Task_CheckShippingRequirements"/>
+<bpmn:sequenceFlow id="Flow_T1_To_G1" sourceRef="Task_CheckShippingRequirements" targetRef="Gateway_ShipmentSizeDecision"/>
+<bpmn:sequenceFlow id="Flow_G1_To_T2" name="Large Shipment" sourceRef="Gateway_ShipmentSizeDecision" targetRef="Task_SendRFPToSustainableLogisticsCompanies"/>
+<bpmn:sequenceFlow id="Flow_G1_To_T5" name="Small Shipment" sourceRef="Gateway_ShipmentSizeDecision" targetRef="Task_SelectCarbonNeutralPostalService"/>
+<bpmn:sequenceFlow id="Flow_T2_To_T3" sourceRef="Task_SendRFPToSustainableLogisticsCompanies" targetRef="Task_AnalyzeOffers"/>
+<bpmn:sequenceFlow id="Flow_T3_To_T4" sourceRef="Task_AnalyzeOffers" targetRef="Task_ReviewAndApproveBestOption"/>
+<bpmn:sequenceFlow id="Flow_T4_To_T6" sourceRef="Task_ReviewAndApproveBestOption" targetRef="Task_GenerateDigitalShippingLabel"/>
+<bpmn:sequenceFlow id="Flow_T5_To_T6" sourceRef="Task_SelectCarbonNeutralPostalService" targetRef="Task_GenerateDigitalShippingLabel"/>
+<bpmn:sequenceFlow id="Flow_T6_To_G2" sourceRef="Task_GenerateDigitalShippingLabel" targetRef="Gateway_InsuranceRequired"/>
+<bpmn:sequenceFlow id="Flow_G2_To_T7" name="Yes" sourceRef="Gateway_InsuranceRequired" targetRef="Task_RequestInsuranceApproval"/>
+<bpmn:sequenceFlow id="Flow_T7_To_T8" sourceRef="Task_RequestInsuranceApproval" targetRef="Task_ApproveInsurance"/>
+<bpmn:sequenceFlow id="Flow_T8_To_G3" sourceRef="Task_ApproveInsurance" targetRef="Gateway_PrepareShipment"/>
+<bpmn:sequenceFlow id="Flow_G2_To_G3" name="No" sourceRef="Gateway_InsuranceRequired" targetRef="Gateway_PrepareShipment"/>
+<bpmn:sequenceFlow id="Flow_G3_To_T9" sourceRef="Gateway_PrepareShipment" targetRef="Task_PrepareGoodsWithSustainableMaterials"/>
+<bpmn:sequenceFlow id="Flow_G3_To_T11" sourceRef="Gateway_PrepareShipment" targetRef="Task_PrepareDigitalDocumentation"/>
+<bpmn:sequenceFlow id="Flow_T9_To_T10" sourceRef="Task_PrepareGoodsWithSustainableMaterials" targetRef="Task_TrackPackagingMaterialUsage"/>
+<bpmn:sequenceFlow id="Flow_T10_To_G4" sourceRef="Task_TrackPackagingMaterialUsage" targetRef="Gateway_MergePreparationActivities"/>
+<bpmn:sequenceFlow id="Flow_T11_To_G4" sourceRef="Task_PrepareDigitalDocumentation" targetRef="Gateway_MergePreparationActivities"/>
+<bpmn:sequenceFlow id="Flow_G4_To_T12" sourceRef="Gateway_MergePreparationActivities" targetRef="Task_NotifyLogisticsProvider"/>
+<bpmn:sequenceFlow id="Flow_T12_To_T13" sourceRef="Task_NotifyLogisticsProvider" targetRef="Task_MonitorCarbonFootprint"/>
+<bpmn:sequenceFlow id="Flow_T13_To_EE1" sourceRef="Task_MonitorCarbonFootprint" targetRef="EndEvent_ShippingProcessCompleted"/>
+<!--  helper flow to model incoming message as sequence into Analyze Offers  -->
+<bpmn:sequenceFlow id="Flow_Message_Offer_To_Company_Internal" sourceRef="Task_AnalyzeOffers" targetRef="Task_AnalyzeOffers">
+<!--  loopback to register message-based start of analysis  -->
+</bpmn:sequenceFlow>
+</bpmn:process>
+<!--  External Partners Process  -->
+<bpmn:process id="Process_ExternalPartners" isExecutable="false" name="External Partners Reactions">
+<bpmn:laneSet id="LaneSet_External">
+<bpmn:lane id="Lane_SustainableLogisticsCompanies" name="Sustainable Logistics Companies">
+<bpmn:flowNodeRef>StartEvent_SLC</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_SLC_ReceiveRFP</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_SLC_SendOffer</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_SLC_ReceiveShipmentNotification</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>EndEvent_SLC</bpmn:flowNodeRef>
+</bpmn:lane>
+<bpmn:lane id="Lane_CarbonNeutralPostalService" name="Carbon-neutral Postal Service">
+<bpmn:flowNodeRef>StartEvent_CNP</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>Task_CNP_ReceiveShipmentNotification</bpmn:flowNodeRef>
+<bpmn:flowNodeRef>EndEvent_CNP</bpmn:flowNodeRef>
+</bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="StartEvent_SLC" name="SLC Start">
+<bpmn:outgoing>ExtFlow_SLC_Start_To_ReceiveRFP</bpmn:outgoing>
+</bpmn:startEvent>
+<bpmn:receiveTask id="Task_SLC_ReceiveRFP" name="Receive RFP">
+<bpmn:incoming>ExtFlow_SLC_Start_To_ReceiveRFP</bpmn:incoming>
+<bpmn:incoming>MessageFlow_RFP_To_SLC</bpmn:incoming>
+<bpmn:outgoing>ExtFlow_SLC_ReceiveRFP_To_SendOffer</bpmn:outgoing>
+</bpmn:receiveTask>
+<bpmn:sendTask id="Task_SLC_SendOffer" name="Send Offer">
+<bpmn:incoming>ExtFlow_SLC_ReceiveRFP_To_SendOffer</bpmn:incoming>
+<bpmn:outgoing>ExtFlow_SLC_SendOffer_To_ReceiveNotification</bpmn:outgoing>
+</bpmn:sendTask>
+<bpmn:receiveTask id="Task_SLC_ReceiveShipmentNotification" name="Receive Shipment Notification">
+<bpmn:incoming>ExtFlow_SLC_SendOffer_To_ReceiveNotification</bpmn:incoming>
+<bpmn:incoming>MessageFlow_Notify_To_SLC</bpmn:incoming>
+<bpmn:outgoing>ExtFlow_SLC_ReceiveNotification_To_End</bpmn:outgoing>
+</bpmn:receiveTask>
+<bpmn:endEvent id="EndEvent_SLC" name="SLC Done">
+<bpmn:incoming>ExtFlow_SLC_ReceiveNotification_To_End</bpmn:incoming>
+</bpmn:endEvent>
+<bpmn:startEvent id="StartEvent_CNP" name="CNP Start">
+<bpmn:outgoing>ExtFlow_CNP_Start_To_ReceiveNotification</bpmn:outgoing>
+</bpmn:startEvent>
+<bpmn:receiveTask id="Task_CNP_ReceiveShipmentNotification" name="Receive Shipment Notification">
+<bpmn:incoming>ExtFlow_CNP_Start_To_ReceiveNotification</bpmn:incoming>
+<bpmn:incoming>MessageFlow_Notify_To_CNP</bpmn:incoming>
+<bpmn:outgoing>ExtFlow_CNP_ReceiveNotification_To_End</bpmn:outgoing>
+</bpmn:receiveTask>
+<bpmn:endEvent id="EndEvent_CNP" name="CNP Done">
+<bpmn:incoming>ExtFlow_CNP_ReceiveNotification_To_End</bpmn:incoming>
+</bpmn:endEvent>
+<bpmn:sequenceFlow id="ExtFlow_SLC_Start_To_ReceiveRFP" sourceRef="StartEvent_SLC" targetRef="Task_SLC_ReceiveRFP"/>
+<bpmn:sequenceFlow id="ExtFlow_SLC_ReceiveRFP_To_SendOffer" sourceRef="Task_SLC_ReceiveRFP" targetRef="Task_SLC_SendOffer"/>
+<bpmn:sequenceFlow id="ExtFlow_SLC_SendOffer_To_ReceiveNotification" sourceRef="Task_SLC_SendOffer" targetRef="Task_SLC_ReceiveShipmentNotification"/>
+<bpmn:sequenceFlow id="ExtFlow_SLC_ReceiveNotification_To_End" sourceRef="Task_SLC_ReceiveShipmentNotification" targetRef="EndEvent_SLC"/>
+<bpmn:sequenceFlow id="ExtFlow_CNP_Start_To_ReceiveNotification" sourceRef="StartEvent_CNP" targetRef="Task_CNP_ReceiveShipmentNotification"/>
+<bpmn:sequenceFlow id="ExtFlow_CNP_ReceiveNotification_To_End" sourceRef="Task_CNP_ReceiveShipmentNotification" targetRef="EndEvent_CNP"/>
+</bpmn:process>
+<!--  Digital System Process  -->
+<bpmn:process id="Process_DigitalSystem" isExecutable="false" name="Digital System Intake">
+<bpmn:startEvent id="StartEvent_Digital" name="Start">
+<bpmn:outgoing>Flow_Digital_Start_To_Receive</bpmn:outgoing>
+</bpmn:startEvent>
+<bpmn:receiveTask id="Task_ReceivePackagingUsageData" name="Receive Packaging Usage Data">
+<bpmn:incoming>Flow_Digital_Start_To_Receive</bpmn:incoming>
+<bpmn:incoming>MessageFlow_PackagingUsage_To_DigitalSystem</bpmn:incoming>
+<bpmn:outgoing>Flow_Digital_Receive_To_End</bpmn:outgoing>
+</bpmn:receiveTask>
+<bpmn:endEvent id="EndEvent_Digital" name="End">
+<bpmn:incoming>Flow_Digital_Receive_To_End</bpmn:incoming>
+</bpmn:endEvent>
+<bpmn:sequenceFlow id="Flow_Digital_Start_To_Receive" sourceRef="StartEvent_Digital" targetRef="Task_ReceivePackagingUsageData"/>
+<bpmn:sequenceFlow id="Flow_Digital_Receive_To_End" sourceRef="Task_ReceivePackagingUsageData" targetRef="EndEvent_Digital"/>
+</bpmn:process>
+<!--  DIAGRAM  -->
+<bpmndi:BPMNDiagram id="BPMNDiagram_DispatchGoods">
+<bpmndi:BPMNPlane id="BPMNPlane_DispatchGoods" bpmnElement="Collaboration_DispatchGoods">
+<!--  Company Pool  -->
+<bpmndi:BPMNShape id="BPMNShape_Participant_Company" bpmnElement="Participant_Company" isHorizontal="true">
+<omgdc:Bounds x="100" y="80" width="2700" height="720"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="110" y="60" width="200" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<!--  Lanes  -->
+<bpmndi:BPMNShape id="BPMNShape_Lane_Secretary" bpmnElement="Lane_Secretary" isHorizontal="true">
+<omgdc:Bounds x="130" y="80" width="2670" height="300"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="135" y="85" width="120" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Lane_LogisticsDeptHead" bpmnElement="Lane_LogisticsDeptHead" isHorizontal="true">
+<omgdc:Bounds x="130" y="380" width="2670" height="160"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="135" y="385" width="180" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Lane_WarehouseStaff" bpmnElement="Lane_WarehouseStaff" isHorizontal="true">
+<omgdc:Bounds x="130" y="540" width="2670" height="260"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="135" y="545" width="160" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<!--  Company Flow Nodes  -->
+<bpmndi:BPMNShape id="BPMNShape_StartEvent_GoodsNeedToBeShipped" bpmnElement="StartEvent_GoodsNeedToBeShipped">
+<omgdc:Bounds x="140" y="142" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="120" y="180" width="120" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_CheckShippingRequirements" bpmnElement="Task_CheckShippingRequirements">
+<omgdc:Bounds x="300" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="305" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Gateway_ShipmentSizeDecision" bpmnElement="Gateway_ShipmentSizeDecision" isMarkerVisible="true">
+<omgdc:Bounds x="460" y="130" width="50" height="50"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="440" y="185" width="150" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_SendRFPToSustainableLogisticsCompanies" bpmnElement="Task_SendRFPToSustainableLogisticsCompanies">
+<omgdc:Bounds x="640" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="645" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_AnalyzeOffers" bpmnElement="Task_AnalyzeOffers">
+<omgdc:Bounds x="800" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="805" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_ReviewAndApproveBestOption" bpmnElement="Task_ReviewAndApproveBestOption">
+<omgdc:Bounds x="960" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="965" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_SelectCarbonNeutralPostalService" bpmnElement="Task_SelectCarbonNeutralPostalService">
+<omgdc:Bounds x="640" y="260" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="645" y="290" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_GenerateDigitalShippingLabel" bpmnElement="Task_GenerateDigitalShippingLabel">
+<omgdc:Bounds x="1120" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1125" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Gateway_InsuranceRequired" bpmnElement="Gateway_InsuranceRequired" isMarkerVisible="true">
+<omgdc:Bounds x="1280" y="130" width="50" height="50"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1260" y="185" width="140" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_RequestInsuranceApproval" bpmnElement="Task_RequestInsuranceApproval">
+<omgdc:Bounds x="1440" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1445" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_ApproveInsurance" bpmnElement="Task_ApproveInsurance">
+<omgdc:Bounds x="1600" y="400" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1605" y="430" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Gateway_PrepareShipment" bpmnElement="Gateway_PrepareShipment" isMarkerVisible="true">
+<omgdc:Bounds x="1760" y="130" width="50" height="50"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1740" y="185" width="140" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_PrepareGoodsWithSustainableMaterials" bpmnElement="Task_PrepareGoodsWithSustainableMaterials">
+<omgdc:Bounds x="1920" y="580" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1925" y="610" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_TrackPackagingMaterialUsage" bpmnElement="Task_TrackPackagingMaterialUsage">
+<omgdc:Bounds x="2080" y="580" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2085" y="610" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_PrepareDigitalDocumentation" bpmnElement="Task_PrepareDigitalDocumentation">
+<omgdc:Bounds x="1920" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1925" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Gateway_MergePreparationActivities" bpmnElement="Gateway_MergePreparationActivities" isMarkerVisible="true">
+<omgdc:Bounds x="2240" y="130" width="50" height="50"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2220" y="185" width="150" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_NotifyLogisticsProvider" bpmnElement="Task_NotifyLogisticsProvider">
+<omgdc:Bounds x="2400" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2405" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_MonitorCarbonFootprint" bpmnElement="Task_MonitorCarbonFootprint">
+<omgdc:Bounds x="2560" y="120" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2565" y="150" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_EndEvent_ShippingProcessCompleted" bpmnElement="EndEvent_ShippingProcessCompleted">
+<omgdc:Bounds x="2720" y="142" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2690" y="180" width="140" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<!--  External Partners Pool  -->
+<bpmndi:BPMNShape id="BPMNShape_Participant_ExternalPartners" bpmnElement="Participant_ExternalPartners" isHorizontal="true">
+<omgdc:Bounds x="100" y="840" width="2700" height="300"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="110" y="820" width="220" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Lane_SustainableLogisticsCompanies" bpmnElement="Lane_SustainableLogisticsCompanies" isHorizontal="true">
+<omgdc:Bounds x="130" y="840" width="2670" height="150"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="135" y="845" width="220" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Lane_CarbonNeutralPostalService" bpmnElement="Lane_CarbonNeutralPostalService" isHorizontal="true">
+<omgdc:Bounds x="130" y="990" width="2670" height="150"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="135" y="995" width="220" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<!--  External Flow Nodes  -->
+<bpmndi:BPMNShape id="BPMNShape_StartEvent_SLC" bpmnElement="StartEvent_SLC">
+<omgdc:Bounds x="140" y="890" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="120" y="928" width="80" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_SLC_ReceiveRFP" bpmnElement="Task_SLC_ReceiveRFP">
+<omgdc:Bounds x="640" y="870" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="645" y="900" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_SLC_SendOffer" bpmnElement="Task_SLC_SendOffer">
+<omgdc:Bounds x="800" y="870" width="100" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="805" y="900" width="90" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_SLC_ReceiveShipmentNotification" bpmnElement="Task_SLC_ReceiveShipmentNotification">
+<omgdc:Bounds x="960" y="870" width="130" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="965" y="900" width="120" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_EndEvent_SLC" bpmnElement="EndEvent_SLC">
+<omgdc:Bounds x="1120" y="892" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1090" y="930" width="80" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_StartEvent_CNP" bpmnElement="StartEvent_CNP">
+<omgdc:Bounds x="140" y="1040" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="120" y="1078" width="80" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_CNP_ReceiveShipmentNotification" bpmnElement="Task_CNP_ReceiveShipmentNotification">
+<omgdc:Bounds x="2400" y="1020" width="140" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2405" y="1050" width="130" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_EndEvent_CNP" bpmnElement="EndEvent_CNP">
+<omgdc:Bounds x="2560" y="1042" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2530" y="1080" width="70" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<!--  Digital System Participant  -->
+<bpmndi:BPMNShape id="BPMNShape_Participant_DigitalSystem" bpmnElement="Participant_DigitalSystem" isHorizontal="true">
+<omgdc:Bounds x="100" y="1160" width="800" height="180"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="110" y="1140" width="160" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<!--  Digital System Flow Nodes  -->
+<bpmndi:BPMNShape id="BPMNShape_StartEvent_Digital" bpmnElement="StartEvent_Digital">
+<omgdc:Bounds x="140" y="1210" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="130" y="1248" width="60" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_Task_ReceivePackagingUsageData" bpmnElement="Task_ReceivePackagingUsageData">
+<omgdc:Bounds x="300" y="1190" width="140" height="80"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="305" y="1220" width="130" height="30"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="BPMNShape_EndEvent_Digital" bpmnElement="EndEvent_Digital">
+<omgdc:Bounds x="480" y="1212" width="36" height="36"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="470" y="1250" width="60" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNShape>
+<!--  Company Sequence Edges  -->
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_SE1_To_T1" bpmnElement="Flow_SE1_To_T1">
+<omgdi:waypoint x="176" y="160"/>
+<omgdi:waypoint x="240" y="160"/>
+<omgdi:waypoint x="300" y="160"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T1_To_G1" bpmnElement="Flow_T1_To_G1">
+<omgdi:waypoint x="400" y="160"/>
+<omgdi:waypoint x="430" y="160"/>
+<omgdi:waypoint x="460" y="155"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_G1_To_T2" bpmnElement="Flow_G1_To_T2">
+<omgdi:waypoint x="510" y="155"/>
+<omgdi:waypoint x="575" y="155"/>
+<omgdi:waypoint x="640" y="160"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="560" y="130" width="80" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_G1_To_T5" bpmnElement="Flow_G1_To_T5">
+<omgdi:waypoint x="485" y="180"/>
+<omgdi:waypoint x="485" y="300"/>
+<omgdi:waypoint x="640" y="300"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="495" y="240" width="90" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T2_To_T3" bpmnElement="Flow_T2_To_T3">
+<omgdi:waypoint x="740" y="160"/>
+<omgdi:waypoint x="770" y="160"/>
+<omgdi:waypoint x="800" y="160"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T3_To_T4" bpmnElement="Flow_T3_To_T4">
+<omgdi:waypoint x="900" y="160"/>
+<omgdi:waypoint x="930" y="160"/>
+<omgdi:waypoint x="960" y="160"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T4_To_T6" bpmnElement="Flow_T4_To_T6">
+<omgdi:waypoint x="1060" y="160"/>
+<omgdi:waypoint x="1090" y="160"/>
+<omgdi:waypoint x="1120" y="160"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T5_To_T6" bpmnElement="Flow_T5_To_T6">
+<omgdi:waypoint x="740" y="300"/>
+<omgdi:waypoint x="1100" y="300"/>
+<omgdi:waypoint x="1120" y="200"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T6_To_G2" bpmnElement="Flow_T6_To_G2">
+<omgdi:waypoint x="1220" y="160"/>
+<omgdi:waypoint x="1250" y="160"/>
+<omgdi:waypoint x="1280" y="155"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_G2_To_T7" bpmnElement="Flow_G2_To_T7">
+<omgdi:waypoint x="1330" y="155"/>
+<omgdi:waypoint x="1385" y="155"/>
+<omgdi:waypoint x="1440" y="160"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1360" y="130" width="50" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T7_To_T8" bpmnElement="Flow_T7_To_T8">
+<omgdi:waypoint x="1540" y="160"/>
+<omgdi:waypoint x="1540" y="440"/>
+<omgdi:waypoint x="1600" y="440"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T8_To_G3" bpmnElement="Flow_T8_To_G3">
+<omgdi:waypoint x="1700" y="440"/>
+<omgdi:waypoint x="1700" y="155"/>
+<omgdi:waypoint x="1760" y="155"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_G2_To_G3" bpmnElement="Flow_G2_To_G3">
+<omgdi:waypoint x="1305" y="180"/>
+<omgdi:waypoint x="1305" y="210"/>
+<omgdi:waypoint x="1760" y="210"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="1320" y="210" width="40" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_G3_To_T9" bpmnElement="Flow_G3_To_T9">
+<omgdi:waypoint x="1810" y="155"/>
+<omgdi:waypoint x="1810" y="620"/>
+<omgdi:waypoint x="1920" y="620"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_G3_To_T11" bpmnElement="Flow_G3_To_T11">
+<omgdi:waypoint x="1810" y="155"/>
+<omgdi:waypoint x="1865" y="155"/>
+<omgdi:waypoint x="1920" y="160"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T9_To_T10" bpmnElement="Flow_T9_To_T10">
+<omgdi:waypoint x="2020" y="620"/>
+<omgdi:waypoint x="2050" y="620"/>
+<omgdi:waypoint x="2080" y="620"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T10_To_G4" bpmnElement="Flow_T10_To_G4">
+<omgdi:waypoint x="2180" y="620"/>
+<omgdi:waypoint x="2180" y="155"/>
+<omgdi:waypoint x="2240" y="155"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T11_To_G4" bpmnElement="Flow_T11_To_G4">
+<omgdi:waypoint x="2020" y="160"/>
+<omgdi:waypoint x="2140" y="160"/>
+<omgdi:waypoint x="2240" y="155"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_G4_To_T12" bpmnElement="Flow_G4_To_T12">
+<omgdi:waypoint x="2290" y="155"/>
+<omgdi:waypoint x="2350" y="155"/>
+<omgdi:waypoint x="2400" y="160"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T12_To_T13" bpmnElement="Flow_T12_To_T13">
+<omgdi:waypoint x="2500" y="160"/>
+<omgdi:waypoint x="2530" y="160"/>
+<omgdi:waypoint x="2560" y="160"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_T13_To_EE1" bpmnElement="Flow_T13_To_EE1">
+<omgdi:waypoint x="2660" y="160"/>
+<omgdi:waypoint x="2700" y="160"/>
+<omgdi:waypoint x="2720" y="160"/>
+</bpmndi:BPMNEdge>
+<!--  External Sequence Edges  -->
+<bpmndi:BPMNEdge id="BPMNEdge_ExtFlow_SLC_Start_To_ReceiveRFP" bpmnElement="ExtFlow_SLC_Start_To_ReceiveRFP">
+<omgdi:waypoint x="176" y="908"/>
+<omgdi:waypoint x="600" y="908"/>
+<omgdi:waypoint x="640" y="910"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_ExtFlow_SLC_ReceiveRFP_To_SendOffer" bpmnElement="ExtFlow_SLC_ReceiveRFP_To_SendOffer">
+<omgdi:waypoint x="740" y="910"/>
+<omgdi:waypoint x="770" y="910"/>
+<omgdi:waypoint x="800" y="910"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_ExtFlow_SLC_SendOffer_To_ReceiveNotification" bpmnElement="ExtFlow_SLC_SendOffer_To_ReceiveNotification">
+<omgdi:waypoint x="900" y="910"/>
+<omgdi:waypoint x="930" y="910"/>
+<omgdi:waypoint x="960" y="910"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_ExtFlow_SLC_ReceiveNotification_To_End" bpmnElement="ExtFlow_SLC_ReceiveNotification_To_End">
+<omgdi:waypoint x="1090" y="910"/>
+<omgdi:waypoint x="1110" y="910"/>
+<omgdi:waypoint x="1120" y="910"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_ExtFlow_CNP_Start_To_ReceiveNotification" bpmnElement="ExtFlow_CNP_Start_To_ReceiveNotification">
+<omgdi:waypoint x="176" y="1058"/>
+<omgdi:waypoint x="2350" y="1058"/>
+<omgdi:waypoint x="2400" y="1060"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_ExtFlow_CNP_ReceiveNotification_To_End" bpmnElement="ExtFlow_CNP_ReceiveNotification_To_End">
+<omgdi:waypoint x="2540" y="1060"/>
+<omgdi:waypoint x="2550" y="1060"/>
+<omgdi:waypoint x="2560" y="1060"/>
+</bpmndi:BPMNEdge>
+<!--  Digital Sequence Edges  -->
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_Digital_Start_To_Receive" bpmnElement="Flow_Digital_Start_To_Receive">
+<omgdi:waypoint x="176" y="1228"/>
+<omgdi:waypoint x="270" y="1228"/>
+<omgdi:waypoint x="300" y="1230"/>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_Flow_Digital_Receive_To_End" bpmnElement="Flow_Digital_Receive_To_End">
+<omgdi:waypoint x="440" y="1230"/>
+<omgdi:waypoint x="460" y="1230"/>
+<omgdi:waypoint x="480" y="1230"/>
+</bpmndi:BPMNEdge>
+<!--  Message Flows  -->
+<bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_RFP_To_SLC" bpmnElement="MessageFlow_RFP_To_SLC" messageVisibleKind="initiating">
+<omgdi:waypoint x="690" y="200"/>
+<omgdi:waypoint x="690" y="830"/>
+<omgdi:waypoint x="690" y="870"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="700" y="520" width="140" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_Offer_To_Company" bpmnElement="MessageFlow_Offer_To_Company" messageVisibleKind="initiating">
+<omgdi:waypoint x="850" y="870"/>
+<omgdi:waypoint x="850" y="220"/>
+<omgdi:waypoint x="850" y="200"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="860" y="520" width="100" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_Notify_To_SLC" bpmnElement="MessageFlow_Notify_To_SLC" messageVisibleKind="initiating">
+<omgdi:waypoint x="2450" y="120"/>
+<omgdi:waypoint x="2450" y="830"/>
+<omgdi:waypoint x="1040" y="870"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2460" y="480" width="140" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_Notify_To_CNP" bpmnElement="MessageFlow_Notify_To_CNP" messageVisibleKind="initiating">
+<omgdi:waypoint x="2470" y="120"/>
+<omgdi:waypoint x="2470" y="990"/>
+<omgdi:waypoint x="2470" y="1020"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2480" y="520" width="130" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_PackagingUsage_To_DigitalSystem" bpmnElement="MessageFlow_PackagingUsage_To_DigitalSystem" messageVisibleKind="initiating">
+<omgdi:waypoint x="2130" y="580"/>
+<omgdi:waypoint x="2130" y="1180"/>
+<omgdi:waypoint x="300" y="1180"/>
+<bpmndi:BPMNLabel>
+<omgdc:Bounds x="2140" y="880" width="150" height="20"/>
+</bpmndi:BPMNLabel>
+</bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane>
+</bpmndi:BPMNDiagram>
+</bpmn:definitions>
