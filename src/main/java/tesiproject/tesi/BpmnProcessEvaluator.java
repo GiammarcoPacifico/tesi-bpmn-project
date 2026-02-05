@@ -1,6 +1,7 @@
 package tesiproject.tesi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import tesiproject.tesi.bpmn.evaluation.DigitalGreenEvaluator;
 import tesiproject.tesi.bpmn.evaluation.humancost.HumanCostCalculator;
 import tesiproject.tesi.bpmn.evaluation.humancost.HumanVarsCompleter;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 
+@SpringBootApplication
 public class BpmnProcessEvaluator {
 
     public static void main(String[] args) throws Exception {
