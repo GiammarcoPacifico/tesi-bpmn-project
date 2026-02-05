@@ -1,6 +1,6 @@
 package tesiproject.tesi.bpmn.evaluation.resourcescost;
 
-import tesiproject.tesi.bpmn.evaluation.humancost.VarLookup;
+import tesiproject.tesi.bpmn.evaluation.common.VarLookup;
 import tesiproject.tesi.bpmn.model.Variable;
 
 import java.math.BigDecimal;

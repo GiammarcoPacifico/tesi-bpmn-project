@@ -1,3 +1,5 @@
+package tesiproject.tesi;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import tesiproject.tesi.bpmn.evaluation.DigitalGreenEvaluator;
 import tesiproject.tesi.bpmn.evaluation.humancost.HumanCostCalculator;
@@ -6,8 +8,8 @@ import tesiproject.tesi.bpmn.evaluation.resourcescost.ResourceCostCalculator;
 import tesiproject.tesi.bpmn.extract.VariableExtractor;
 import tesiproject.tesi.bpmn.model.*;
 import tesiproject.tesi.bpmn.parser.BpmnXmlParser;
-import tesiproject.tesi.controller.DefaultsCatalogProvider;
-import tesiproject.tesi.controller.DefaultsReport;
+import tesiproject.tesi.service.DefaultsCatalogProvider;
+import tesiproject.tesi.controller.dto.DefaultsReport;
 import tesiproject.tesi.service.BenchmarkService;
 
 import java.io.FileInputStream;

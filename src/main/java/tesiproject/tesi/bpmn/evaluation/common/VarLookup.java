@@ -1,4 +1,4 @@
-package tesiproject.tesi.bpmn.evaluation.humancost;
+package tesiproject.tesi.bpmn.evaluation.common;
 
 import tesiproject.tesi.bpmn.model.Variable;
 

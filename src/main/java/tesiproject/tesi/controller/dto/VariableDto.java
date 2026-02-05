@@ -1,4 +1,4 @@
-package tesiproject.tesi.controller;
+package tesiproject.tesi.controller.dto;
 
 import tesiproject.tesi.bpmn.model.VarCategory;
 import tesiproject.tesi.bpmn.model.VarSource;

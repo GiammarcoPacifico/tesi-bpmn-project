@@ -1,13 +1,12 @@
 package tesiproject.tesi.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import tesiproject.tesi.bpmn.model.ProcessModel;
 import tesiproject.tesi.bpmn.model.Variable;
 import tesiproject.tesi.bpmn.parser.BpmnXmlParser;
-import tesiproject.tesi.controller.DefaultsReport;
-import tesiproject.tesi.controller.VariableDto;
-import tesiproject.tesi.controller.VariablesResponseDto;
+import tesiproject.tesi.controller.dto.DefaultsReport;
+import tesiproject.tesi.controller.dto.VariableDto;
+import tesiproject.tesi.controller.dto.VariablesResponseDto;
 
 import java.io.InputStream;
 import java.util.List;

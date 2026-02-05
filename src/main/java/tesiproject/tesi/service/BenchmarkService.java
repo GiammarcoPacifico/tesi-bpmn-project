@@ -3,9 +3,8 @@ package tesiproject.tesi.service;
 import org.springframework.stereotype.Service;
 import tesiproject.tesi.bpmn.evaluation.humancost.HumanVarsCompleter;
 import tesiproject.tesi.bpmn.model.*;
-import tesiproject.tesi.controller.DefaultsCatalog;
-import tesiproject.tesi.controller.DefaultsCatalogProvider;
-import tesiproject.tesi.controller.DefaultsReport;
+import tesiproject.tesi.controller.dto.DefaultsCatalog;
+import tesiproject.tesi.controller.dto.DefaultsReport;
 
 import java.math.BigDecimal;
 import java.util.*;

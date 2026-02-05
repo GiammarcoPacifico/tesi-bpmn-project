@@ -5,9 +5,9 @@ import tesiproject.tesi.bpmn.model.VarCategory;
 import tesiproject.tesi.bpmn.model.VarSource;
 import tesiproject.tesi.bpmn.model.VarType;
 import tesiproject.tesi.bpmn.model.Variable;
-import tesiproject.tesi.controller.DefaultsCatalog;
-import tesiproject.tesi.controller.DefaultsCatalogProvider;
-import tesiproject.tesi.controller.DefaultsReport;
+import tesiproject.tesi.controller.dto.DefaultsCatalog;
+import tesiproject.tesi.service.DefaultsCatalogProvider;
+import tesiproject.tesi.controller.dto.DefaultsReport;
 
 import java.math.BigDecimal;
 import java.util.*;

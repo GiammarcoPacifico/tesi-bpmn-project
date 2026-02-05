@@ -1,4 +1,4 @@
-package tesiproject.tesi.controller;
+package tesiproject.tesi.controller.dto;
 
 import java.util.ArrayList;
 import java.util.List;

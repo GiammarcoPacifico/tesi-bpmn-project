@@ -1,4 +1,4 @@
-package tesiproject.tesi.controller;
+package tesiproject.tesi.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

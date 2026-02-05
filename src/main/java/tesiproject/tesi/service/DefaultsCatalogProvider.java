@@ -1,8 +1,9 @@
-package tesiproject.tesi.controller;
+package tesiproject.tesi.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import tesiproject.tesi.controller.dto.DefaultsCatalog;
 
 import java.io.InputStream;
 
